@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/todayFragment">
+
+    <fragment
+        android:id="@+id/todayFragment"
+        android:name="com.resocoder.forecast3.TodayFragment"
+        android:label="Today"
+        tools:layout="@layout/fragment_today" />
+    <fragment
+        android:id="@+id/next7DaysFragment"
+        android:name="com.resocoder.forecast3.Next7DaysFragment"
+        android:label="Next 7 Days"
+        tools:layout="@layout/fragment_next_7_days" />
+    <fragment
+        android:id="@+id/dayFragment"
+        android:name="com.resocoder.forecast3.DayFragment"
+        android:label="fragment_day"
+        tools:layout="@layout/fragment_day" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.resocoder.forecast3.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>
