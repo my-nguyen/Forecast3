@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.resocoder.forecast3.databinding.FragmentTodayBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class TodayFragment : Fragment(R.layout.fragment_today) {
 
@@ -20,8 +22,22 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
 
         binding = FragmentTodayBinding.bind(view)
 
-        val weather = retrofit1()
-        // val weather = retrofit2()
+        // serviceWithoutCoroutine()
+        serviceWithCoroutine()
+    }
+
+    private fun serviceWithCoroutine() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val weather = WeatherService2().getCurrent("London")
+            withContext(Dispatchers.Main) {
+                binding.today.text = weather.toString()
+            }
+        }
+    }
+
+    private fun serviceWithoutCoroutine() {
+        // val weather = retrofit_ResoCoder()
+        val weather = retrofit_normally()
         weather.enqueue(object : Callback<Weather> {
             override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
                 Log.i(TAG, "onResponse $response")
@@ -39,16 +55,12 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
         })
     }
 
-    private fun retrofit1() = WeatherService1().getCurrent("London")
+    private fun retrofit_ResoCoder() = WeatherService1().getCurrent("London")
 
-    /*private fun retrofit2(): Call<Weather> {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("http://api.weatherstack.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val service = retrofit.create(WeatherService1:class.java)
+    private fun retrofit_normally(): Call<Weather> {
+        val service = WeatherService.retrofit().create(WeatherService1::class.java)
         return service.getCurrent("3ed822f565a1b40e74718a346a592e9e","London")
-    }*/
+    }
 
     companion object {
         const val TAG = "TodayFragment"
