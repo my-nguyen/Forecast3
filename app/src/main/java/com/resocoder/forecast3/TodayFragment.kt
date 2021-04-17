@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.resocoder.forecast3.databinding.FragmentTodayBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,9 +23,22 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
         serviceWithCoroutine()
     }
 
+    private fun serviceWithCoroutine2() {
+        val interceptor = ConnectivityInterceptor(requireContext())
+        val service = WeatherService4(interceptor)
+        val dataSource = NetworkDataSourceImpl(service)
+        dataSource.currentWeather.observe(this, {
+            binding.today.text = it.toString()
+        })
+
+        GlobalScope.launch(Dispatchers.Main) {
+            dataSource.getCurrent("San Jose, CA")
+        }
+    }
+
     private fun serviceWithCoroutine() {
         CoroutineScope(Dispatchers.IO).launch {
-            val weather = WeatherService2().getCurrent("San Jose, CA")
+            val weather = WeatherService3().getCurrent("San Jose, CA")
             withContext(Dispatchers.Main) {
                 binding.today.text = weather.current.toString()
             }
@@ -36,8 +46,8 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
     }
 
     private fun serviceWithoutCoroutine() {
-        // val weather = retrofit_ResoCoder()
-        val weather = retrofit_normally()
+        // val weather = retrofitResoCoder()
+        val weather = retrofitNormally()
         weather.enqueue(object : Callback<Weather> {
             override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
                 Log.i(TAG, "onResponse $response")
@@ -55,11 +65,11 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
         })
     }
 
-    private fun retrofit_ResoCoder() = WeatherService1().getCurrent("London")
+    private fun retrofitResoCoder() = WeatherService2().getCurrent("London")
 
-    private fun retrofit_normally(): Call<Weather> {
-        val service = WeatherService.retrofit().create(WeatherService1::class.java)
-        return service.getCurrent("3ed822f565a1b40e74718a346a592e9e","London")
+    private fun retrofitNormally(): Call<Weather> {
+        val service = WeatherService1.retrofit().create(WeatherService1::class.java)
+        return service.getCurrent("3ed822f565a1b40e74718a346a592e9e", "London")
     }
 
     companion object {

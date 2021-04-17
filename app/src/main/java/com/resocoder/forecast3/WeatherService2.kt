@@ -1,16 +1,14 @@
 package com.resocoder.forecast3
 
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherService2: WeatherService {
     @GET("current")
-    suspend fun getCurrent(@Query("access_key") apiKey: String, @Query("query") location: String): Weather
-
-    @GET("current")
-    suspend fun getCurrent(@Query("query") location: String): Weather
+    fun getCurrent(@Query("query") location: String): Call<Weather>
 
     companion object {
-        operator fun invoke(): WeatherService2 = WeatherService.retrofit().create(WeatherService2::class.java)
+        operator fun invoke() = WeatherService.retrofit().create(WeatherService2::class.java)
     }
 }
