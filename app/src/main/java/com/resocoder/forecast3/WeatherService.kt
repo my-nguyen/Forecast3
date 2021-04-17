@@ -9,9 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 interface WeatherService {
     companion object {
-        const val API_KEY = "3ed822f565a1b40e74718a346a592e9e"
+        private const val API_KEY = "3ed822f565a1b40e74718a346a592e9e"
 
-        fun interceptor() = Interceptor { chain ->
+        private fun interceptor() = Interceptor { chain ->
             val url = chain.request()
                 .url()
                 .newBuilder()
@@ -24,14 +24,14 @@ interface WeatherService {
             return@Interceptor chain.proceed(request)
         }
 
-        fun client() = OkHttpClient.Builder()
+        private fun client(): OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(interceptor())
             .build()
 
-        fun retrofit() = Retrofit.Builder()
+        fun retrofit(): Retrofit = Retrofit.Builder()
             .client(client())
             .baseUrl("http://api.weatherstack.com/")
-            // .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            // .addCallAdapterFactory(CoroutineCallAdapterFactory()) // not needed since getCurrent() doesn't return a Deferred<Weather>
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -28,9 +28,9 @@ class TodayFragment : Fragment(R.layout.fragment_today) {
 
     private fun serviceWithCoroutine() {
         CoroutineScope(Dispatchers.IO).launch {
-            val weather = WeatherService2().getCurrent("London")
+            val weather = WeatherService2().getCurrent("San Jose, CA")
             withContext(Dispatchers.Main) {
-                binding.today.text = weather.toString()
+                binding.today.text = weather.current.toString()
             }
         }
     }

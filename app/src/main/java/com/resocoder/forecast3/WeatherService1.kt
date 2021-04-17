@@ -12,6 +12,6 @@ interface WeatherService1: WeatherService {
     fun getCurrent(@Query("query") location: String): Call<Weather>
 
     companion object {
-        operator fun invoke() = WeatherService.retrofit().create(WeatherService1::class.java)
+        operator fun invoke(): WeatherService1 = WeatherService.retrofit().create(WeatherService1::class.java)
     }
 }
